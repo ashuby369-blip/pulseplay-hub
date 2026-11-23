@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PulsePlay Hub</title>
+<style>
+  body {
+    margin: 0;
+    padding: 16px;
+    background: #0b1120;
+    color: #f8fafc;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  .box {
+    max-width: 520px;
+    margin: 0 auto;
+    background: #131c31;
+    border: 1px solid #263554;
+    border-radius: 14px;
+    padding: 18px;
+  }
+  .bal {
+    font-size: 22px;
+    font-weight: 800;
+    color: #facc15;
+    margin: 8px 0 14px;
+  }
+  button {
+    background: #10b981;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-right: 8px;
+    margin-top: 6px;
+  }
+  .upi-box {
+    margin-top: 14px;
+    padding: 12px;
+    background: #0b1120;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+  <div class="box">
+    <h2>PulsePlay Hub</h2>
+    <div>Starter Credit Active (3× / ₹600 Playthrough)</div>
+    <div class="bal" id="balText">Balance: ₹200.00</div>
+    <button type="button" id="playBtn">Play Quick Round (-₹20)</button>
+    <button type="button" id="depBtn">UPI Deposit Info</button>
+    <div class="upi-box" id="infoBox">
+      Games: Sky wins • Crystal Drop • Hue Match • Spin Blitz
+    </div>
+  </div>
+<script>
+  let bal = 200;
+  document.getElementById("playBtn").addEventListener("click", function () {
+    if (bal < 20) {
+      document.getElementById("infoBox").textContent = "Low balance. Use UPI deposit details.";
+      return;
+    }
+    bal -= 20;
+    const win = Math.random() > 0.5 ? 40 : 0;
+    bal += win;
+    document.getElementById("balText").textContent = "Balance: ₹" + bal.toFixed(2);
+    document.getElementById("infoBox").textContent =
+      win > 0 ? "Round result: Won ₹40.00!" : "Round result: No win this round.";
+  });
+  document.getElementById("depBtn").addEventListener("click", function () {
+    document.getElementById("infoBox").innerHTML =
+      "UPI ID: <strong>sashu1537@ybl</strong><br>Ref: <strong>PulsePlay-Desk-01</strong><br>Manual verification required in static mode.";
+  });
+</script>
+</body>
+</html>
