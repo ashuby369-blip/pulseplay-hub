@@ -2,182 +2,350 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>PulsePlay Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>WinPulse Arena — Live Gaming Hub</title>
 <style>
-  *{box-sizing:border-box}
-  body{margin:0;padding:12px;background:#070b14;color:#f8fafc;font-family:system-ui,sans-serif}
-  .card{max-width:460px;margin:0 auto 12px;background:#111827;border:1px solid #26334d;border-radius:14px;padding:14px}
-  .row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
-  .bal{font-size:24px;font-weight:800;color:#facc15}
-  .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0}
-  .tab{background:#0b1120;border:1px solid #26334d;color:#cbd5e1;padding:9px 4px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer}
-  .tab.on{border-color:#10b981;color:#6ee7b7;background:#0f2629}
-  .stakes{display:flex;gap:6px;margin:10px 0}
-  .st{flex:1;background:#0b1120;border:1px solid #26334d;color:#fff;padding:8px;border-radius:8px;font-weight:700;cursor:pointer}
-  .st.on{border-color:#facc15;color:#facc15}
-  .btn{width:100%;background:#10b981;color:#fff;border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px}
-  .btn.red{background:#ef4444}.btn.blue{background:#2563eb}
-  .sky{height:130px;background:#090f1d;border:1px solid #26334d;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-  .mult{font-size:36px;font-weight:900;color:#facc15}
-  .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:8px 0}
-  .cell{aspect-ratio:1/1;background:#1e293b;border:1px solid #334155;border-radius:8px;color:#fff;font-size:16px;font-weight:700;cursor:pointer}
-  .hue{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
-  .hb{padding:11px 4px;border:2px solid transparent;border-radius:9px;color:#fff;font-weight:700;cursor:pointer}
-  .hb.on{border-color:#facc15}
-  .box{background:#090f1d;border:1px solid #26334d;border-radius:10px;padding:10px;font-size:13px;margin-top:10px;line-height:1.5}
-  .hide{display:none}
-  input{width:100%;padding:10px;border-radius:9px;border:1px solid #26334d;background:#090f1d;color:#fff;margin-top:6px}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:#060913;color:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100vh}
+  .wrap{max-width:460px;margin:0 auto;padding:12px 12px 70px}
+  .glass{background:linear-gradient(180deg,#121a2f 0%,#0b1020 100%);border:1px solid #233152;border-radius:16px;padding:15px;margin-bottom:12px;box-shadow:0 12px 30px rgba(0,0,0,.45)}
+  .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .badge{display:inline-flex;align-items:center;gap:6px;background:rgba(16,185,129,.14);border:1px solid rgba(16,185,129,.35);color:#34d399;font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px}
+  .dot{width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981}
+  .gold{color:#facc15;font-weight:800}
+  input{width:100%;background:#070b16;border:1px solid #263554;border-radius:11px;padding:12px;color:#fff;font-size:15px;margin-top:6px;outline:none}
+  input:focus{border-color:#10b981}
+  .btn{width:100%;border:none;border-radius:11px;padding:13px;font-size:15px;font-weight:800;cursor:pointer;color:#fff;margin-top:10px}
+  .btn-green{background:linear-gradient(135deg,#10b981,#059669)}
+  .btn-red{background:linear-gradient(135deg,#ef4444,#dc2626)}
+  .btn-gold{background:linear-gradient(135deg,#f59e0b,#d97706)}
+  .btn-blue{background:linear-gradient(135deg,#3b82f6,#1d4ed8)}
+  .btn-sm{padding:7px 11px;font-size:12px;border-radius:9px;border:none;font-weight:800;cursor:pointer}
+  .nav{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+  .nav button{background:#0e1526;border:1px solid #233152;border-radius:12px;padding:9px 2px;color:#94a3b8;font-size:11px;font-weight:700;cursor:pointer}
+  .nav button span{display:block;font-size:18px;margin-bottom:2px}
+  .nav button.on{background:#12292d;border-color:#10b981;color:#6ee7b7}
+  .chips{display:flex;gap:6px;margin-top:8px}
+  .chip{flex:1;background:#070b16;border:1px solid #263554;color:#cbd5e1;padding:8px;border-radius:9px;font-weight:700;cursor:pointer}
+  .chip.on{border-color:#facc15;color:#facc15;background:rgba(250,204,21,.1)}
+  /* Crash Sky Arena */
+  .sky-box{position:relative;height:175px;border-radius:14px;background:radial-gradient(circle at 20% 90%,#1e3a8a 0%,#070b16 72%);border:1px solid #263554;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .sky-curve{position:absolute;inset:0;width:100%;height:100%}
+  .sky-mult{font-size:40px;font-weight:900;z-index:2;text-shadow:0 4px 16px rgba(0,0,0,.8)}
+  .hist{display:flex;gap:5px;overflow-x:auto;margin-top:8px}
+  .pill{font-size:11px;font-weight:700;padding:3px 8px;border-radius:7px;background:#070b16;border:1px solid #233152}
+  /* Mines 5x5 */
+  .mgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0}
+  .mcell{aspect-ratio:1/1;background:#18233c;border:1px solid #2c3e66;border-radius:9px;font-size:19px;color:#fff;font-weight:800;cursor:pointer}
+  .mcell.ok{background:rgba(16,185,129,.22);border-color:#10b981}
+  .mcell.no{background:rgba(239,68,68,.25);border-color:#ef4444}
+  /* Color + Number */
+  .cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:8px 0}
+  .cbtn{padding:12px 4px;border:2px solid transparent;border-radius:10px;color:#fff;font-weight:800;font-size:12px;cursor:pointer}
+  .cbtn.on{border-color:#facc15;box-shadow:0 0 10px rgba(250,204,21,.4)}
+  .ngrid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:8px 0}
+  .nbtn{background:#070b16;border:1px solid #263554;color:#fff;padding:8px 0;border-radius:8px;font-weight:700;cursor:pointer}
+  .nbtn.on{border-color:#facc15;color:#facc15}
+  /* Wheel */
+  .wheel-box{position:relative;width:190px;height:190px;margin:10px auto}
+  .ptr{position:absolute;top:-8px;left:50%;transform:translateX(-50%);border-left:10px solid transparent;border-right:10px solid transparent;border-top:18px solid #facc15;z-index:3}
+  .disc{width:100%;height:100%;border-radius:50%;border:5px solid #263554;background:conic-gradient(#ef4444 0 45deg,#10b981 45deg 90deg,#3b82f6 90deg 135deg,#8b5cf6 135deg 180deg,#f59e0b 180deg 225deg,#06b6d4 225deg 270deg,#ec4899 270deg 315deg,#14b8a6 315deg 360deg);transition:transform 2.8s cubic-bezier(.15,.85,.25,1);display:flex;align-items:center;justify-content:center}
+  .hub{width:56px;height:56px;border-radius:50%;background:#070b16;border:2px solid #facc15;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#facc15}
+  /* Modal & Feed */
+  .modal{position:fixed;inset:0;background:rgba(3,6,15,.85);display:none;align-items:center;justify-content:center;padding:14px;z-index:50}
+  .modal.open{display:flex}
+  .qr{background:#fff;padding:10px;border-radius:12px;width:170px;height:170px;margin:10px auto;display:flex;align-items:center;justify-content:center}
+  .feed{list-style:none;margin:0;padding:0;max-height:130px;overflow-y:auto;font-size:12px}
+  .feed li{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #1b253d}
+  .hide{display:none!important}
 </style>
 </head>
 <body>
 
-<div id="loginBox" class="card">
-  <h2 style="margin:0 0 6px">PulsePlay Hub</h2>
-  <div style="font-size:13px;color:#94a3b8">Enter Mobile & OTP (1234) to claim ₹200 Starter Credit</div>
-  <input id="ph" type="tel" maxlength="10" value="9876543210" placeholder="10-digit Mobile" />
-  <input id="otp" type="tel" maxlength="4" value="1234" placeholder="OTP (1234)" />
-  <button class="btn" onclick="enterApp()">Enter Arena</button>
+<!-- LOGIN -->
+<div id="loginView" class="wrap" style="padding-top:40px">
+  <div class="glass">
+    <div class="badge"><span class="dot"></span> WINPULSE ARENA • LIVE</div>
+    <h1 style="margin:10px 0 4px;font-size:25px">Player Login</h1>
+    <p style="margin:0 0 14px;font-size:13px;color:#94a3b8">Verify mobile number to unlock <span class="gold">₹200.00 Welcome Bonus</span> & all 4 live arenas.</p>
+    <label style="font-size:12px;color:#94a3b8">Mobile Number (+91)</label>
+    <div class="row">
+      <input id="mob" type="tel" maxlength="10" value="9876543210" placeholder="10-digit mobile" />
+      <button class="btn-sm" style="background:#1e293b;color:#fff;padding:13px" onclick="alert('Demo OTP: 1234')">OTP</button>
+    </div>
+    <label style="font-size:12px;color:#94a3b8;display:block;margin-top:10px">Enter 4-Digit OTP</label>
+    <input id="otp" type="tel" maxlength="4" value="1234" placeholder="1234" />
+    <button class="btn btn-green" onclick="login()">Enter WinPulse Arena</button>
+  </div>
 </div>
 
-<div id="appBox" class="hide">
-  <div class="card">
+<!-- MAIN ARENA -->
+<div id="arenaView" class="wrap hide">
+  <div class="glass" style="padding:12px">
     <div class="row">
-      <div><strong>PulsePlay Hub</strong><div id="uid" style="font-size:11px;color:#94a3b8"></div></div>
-      <div><div class="bal" id="bal">₹200.00</div><div id="wg" style="font-size:11px;color:#94a3b8">Wagered: ₹0 / ₹600</div></div>
-    </div>
-    <div class="stakes">
-      <button class="st" onclick="setBet(10,this)">₹10</button>
-      <button class="st on" onclick="setBet(20,this)">₹20</button>
-      <button class="st" onclick="setBet(50,this)">₹50</button>
-      <button class="st" onclick="setBet(100,this)">₹100</button>
-    </div>
-    <div class="tabs">
-      <button class="tab on" onclick="showTab('sky',this)">🚀 Sky wins</button>
-      <button class="tab" onclick="showTab('mine',this)">💎 Crystal</button>
-      <button class="tab" onclick="showTab('hue',this)">🎨 Hue</button>
-      <button class="tab" onclick="showTab('spin',this)">🎡 Spin</button>
-    </div>
-
-    <!-- 1. SKY WINS -->
-    <div id="g-sky">
-      <div class="sky"><div class="mult" id="mTxt">1.00×</div><div id="sTxt" style="font-size:12px;color:#94a3b8">Launch & Cash Out before crash!</div></div>
-      <button class="btn" id="skyBtn" onclick="toggleSky()">Launch Flight (₹20)</button>
-    </div>
-
-    <!-- 2. CRYSTAL DROP -->
-    <div id="g-mine" class="hide">
-      <div class="row" style="font-size:13px"><span>Gems: <b id="gCnt">0</b></span><span>Win: <b id="mWin" style="color:#facc15">₹0</b></span></div>
-      <div class="grid" id="board"></div>
-      <button class="btn" id="mineBtn" onclick="toggleMine()">Start Crystal Round (₹20)</button>
-    </div>
-
-    <!-- 3. HUE MATCH -->
-    <div id="g-hue" class="hide">
-      <div class="hue">
-        <button class="hb on" style="background:#059669" onclick="pickH('Green',this)">Green (2×)</button>
-        <button class="hb" style="background:#7c3aed" onclick="pickH('Violet',this)">Violet (4×)</button>
-        <button class="hb" style="background:#dc2626" onclick="pickH('Red',this)">Red (2×)</button>
+      <div>
+        <div style="font-weight:900;font-size:17px">WinPulse Arena</div>
+        <div id="userTag" style="font-size:11px;color:#94a3b8">+91 9876543210 • VIP 1</div>
       </div>
-      <button class="btn" onclick="playHue()">Draw Hue Round (₹20)</button>
+      <div class="row" style="background:#070b16;padding:6px 10px;border-radius:11px;border:1px solid #233152">
+        <div>
+          <div style="font-size:10px;color:#94a3b8">WALLET</div>
+          <div class="gold" style="font-size:17px" id="balTxt">₹200.00</div>
+        </div>
+        <button class="btn-sm" style="background:#10b981;color:#042f2e" onclick="openPay()">+ Deposit</button>
+      </div>
     </div>
-
-    <!-- 4. SPIN BLITZ -->
-    <div id="g-spin" class="hide">
-      <div class="sky"><div class="mult" id="spTxt">🎡 0× – 5×</div><div style="font-size:12px;color:#94a3b8">Multipliers: 0×, 0.5×, 1.5×, 2×, 3×, 5×</div></div>
-      <button class="btn" onclick="playSpin()">Spin Wheel (₹20)</button>
+    <div style="margin-top:10px;font-size:11px;color:#cbd5e1">
+      <div class="row"><span>Bonus Playthrough (3×)</span><span id="wagTxt">₹0 / ₹600</span></div>
+      <div style="height:6px;background:#070b16;border-radius:99px;margin-top:4px;overflow:hidden">
+        <div id="wagBar" style="height:100%;width:0%;background:linear-gradient(90deg,#10b981,#facc15)"></div>
+      </div>
     </div>
+  </div>
 
-    <div class="box" id="msg">Ready to play! Select any game above.</div>
-    <button class="btn blue" onclick="showUpi()">UPI Deposit Info (sashu1537@ybl)</button>
+  <!-- GAME TABS -->
+  <div class="nav">
+    <button class="on" onclick="tab('sky',this)"><span>🚀</span>Sky Wins</button>
+    <button onclick="tab('mine',this)"><span>💎</span>Crystal</button>
+    <button onclick="tab('hue',this)"><span>🎨</span>Hue Match</button>
+    <button onclick="tab('spin',this)"><span>🎡</span>Spin Blitz</button>
+  </div>
+
+  <!-- STAKE BAR -->
+  <div class="glass" style="padding:10px 12px">
+    <div class="row" style="font-size:12px"><span style="color:#94a3b8">Round Stake</span><span class="gold" id="stkTxt">₹20</span></div>
+    <div class="chips">
+      <button class="chip" onclick="stake(10,this)">₹10</button>
+      <button class="chip on" onclick="stake(20,this)">₹20</button>
+      <button class="chip" onclick="stake(50,this)">₹50</button>
+      <button class="chip" onclick="stake(100,this)">₹100</button>
+    </div>
+  </div>
+
+  <!-- 1. SKY WINS -->
+  <div id="v-sky" class="glass">
+    <div class="row" style="margin-bottom:8px"><strong>🚀 Sky Wins (Crash)</strong><span class="badge">Live Multiplier</span></div>
+    <div class="sky-box">
+      <svg class="sky-curve" viewBox="0 0 300 150" preserveAspectRatio="none">
+        <path id="flightPath" d="M 10 140 Q 10 140 10 140" fill="none" stroke="#10b981" stroke-width="3"/>
+      </svg>
+      <div class="sky-mult gold" id="multTxt">1.00×</div>
+      <div id="skyMsg" style="font-size:12px;color:#cbd5e1;z-index:2">Launch & Cash Out before fly-away!</div>
+    </div>
+    <div class="hist" id="skyHist">
+      <span class="pill" style="color:#34d399">2.64×</span>
+      <span class="pill" style="color:#f87171">1.14×</span>
+      <span class="pill" style="color:#34d399">5.12×</span>
+    </div>
+    <button class="btn btn-green" id="skyBtn" onclick="playSky()">Launch Flight (₹20)</button>
+  </div>
+
+  <!-- 2. CRYSTAL MINES -->
+  <div id="v-mine" class="glass hide">
+    <div class="row"><strong>💎 Crystal Drop</strong><span style="font-size:12px;color:#94a3b8">22 Gems • 3 Mines</span></div>
+    <div class="row" style="font-size:13px;margin-top:8px;background:#070b16;padding:8px 10px;border-radius:9px">
+      <span>Gems: <b id="gNum" style="color:#34d399">0</b></span>
+      <span>Cashout: <b id="gWin" class="gold">₹0.00</b></span>
+    </div>
+    <div class="mgrid" id="mGrid"></div>
+    <button class="btn btn-green" id="mineBtn" onclick="playMine()">Start Round (₹20)</button>
+  </div>
+
+  <!-- 3. HUE MATCH -->
+  <div id="v-hue" class="glass hide">
+    <div class="row"><strong>🎨 Hue & Number</strong><span style="font-size:12px;color:#94a3b8">Color 2× • Num 8×</span></div>
+    <div class="cgrid">
+      <button class="cbtn on" style="background:#059669" onclick="setC('Green',this)">Green (2×)</button>
+      <button class="cbtn" style="background:#7c3aed" onclick="setC('Violet',this)">Violet (4×)</button>
+      <button class="cbtn" style="background:#dc2626" onclick="setC('Red',this)">Red (2×)</button>
+    </div>
+    <div class="ngrid" id="nGrid"></div>
+    <div id="hueOut" style="text-align:center;font-size:13px;background:#070b16;padding:9px;border-radius:9px">Select color or lucky number (0–9)</div>
+    <button class="btn btn-green" onclick="playHue()">Place Bet & Draw (₹20)</button>
+  </div>
+
+  <!-- 4. SPIN BLITZ -->
+  <div id="v-spin" class="glass hide">
+    <div class="row"><strong>🎡 Spin Blitz</strong><span style="font-size:12px;color:#94a3b8">0× to 5× Wheel</span></div>
+    <div class="wheel-box">
+      <div class="ptr"></div>
+      <div class="disc" id="disc"><div class="hub" id="hubTxt">SPIN</div></div>
+    </div>
+    <div style="text-align:center;font-size:11px;color:#94a3b8">Segments: 0× • 0.5× • 1.5× • 2× • 3× • 5×</div>
+    <button class="btn btn-gold" id="spinBtn" onclick="playSpin()">Spin Wheel (₹20)</button>
+  </div>
+
+  <!-- LIVE FEED -->
+  <div class="glass">
+    <div style="font-size:13px;font-weight:700;margin-bottom:6px">Live Ledger & Round History</div>
+    <ul class="feed" id="feed">
+      <li><span>Welcome Bonus Credit</span><strong style="color:#34d399">+₹200.00</strong></li>
+    </ul>
+  </div>
+</div>
+
+<!-- UPI DEPOSIT MODAL -->
+<div id="payModal" class="modal">
+  <div class="glass" style="width:100%;max-width:380px">
+    <div class="row"><strong>UPI Instant Deposit</strong><button onclick="closePay()" style="background:none;border:none;color:#94a3b8;font-size:22px;cursor:pointer">&times;</button></div>
+    <div class="chips" style="margin-top:10px">
+      <button class="chip on" onclick="setQr(100,this)">₹100</button>
+      <button class="chip" onclick="setQr(300,this)">₹300</button>
+      <button class="chip" onclick="setQr(500,this)">₹500</button>
+      <button class="chip" onclick="setQr(1000,this)">₹1000</button>
+    </div>
+    <div class="qr"><img id="qrImg" width="150" height="150" alt="UPI QR" /></div>
+    <div style="background:#070b16;padding:10px;border-radius:10px;font-size:12px;line-height:1.6">
+      <div class="row"><span>UPI ID: <b>sashu1537@ybl</b></span><button class="btn-sm" style="background:#10b981;color:#042f2e" onclick="copyUpi()">Copy</button></div>
+      <div>Ref: <b>Terminal-1-Q16202080</b></div>
+    </div>
+    <input id="utr" type="tel" maxlength="12" placeholder="Enter 12-digit UTR number" />
+    <button class="btn btn-blue" onclick="addDep()">Verify UTR & Credit Wallet</button>
   </div>
 </div>
 
 <script>
-let bal=200,wag=0,bet=20,skyOn=false,skyM=1,skyCrash=2,skyT=null,mineOn=false,bombs=[],gems=0,huePick='Green';
+let bal=200,wag=0,bet=20,depAmt=100,skyOn=false,skyM=1,skyEnd=2,skyInt=null,mineOn=false,bombs=[],gems=0,pCol='Green',pNum=null,rot=0,spinOn=false;
 const $=id=>document.getElementById(id);
-function upd(){
-  $('bal').textContent='₹'+bal.toFixed(2);
-  $('wg').textContent='Wagered: ₹'+wag+' / ₹600';
+
+function sync(){
+  $('balTxt').textContent='₹'+bal.toFixed(2);
+  $('wagTxt').textContent='₹'+wag+' / ₹600';
+  $('wagBar').style.width=Math.min(100,(wag/600)*100)+'%';
+  $('stkTxt').textContent='₹'+bet;
   if(!skyOn)$('skyBtn').textContent='Launch Flight (₹'+bet+')';
-  if(!mineOn)$('mineBtn').textContent='Start Crystal Round (₹'+bet+')';
+  if(!mineOn)$('mineBtn').textContent='Start Round (₹'+bet+')';
+  $('spinBtn').textContent='Spin Wheel (₹'+bet+')';
 }
-function enterApp(){
-  if($('ph').value.length<10||$('otp').value.length<4)return alert('Enter mobile & 4-digit OTP');
-  $('uid').textContent='ID: +91 '+$('ph').value;
-  $('loginBox').classList.add('hide');$('appBox').classList.remove('hide');upd();
+function log(t,a,w){
+  const li=document.createElement('li');
+  li.innerHTML=`<span>${t}</span><strong style="color:${w?'#34d399':'#f87171'}">${w?'+':'-'}₹${a.toFixed(2)}</strong>`;
+  $('feed').prepend(li);
 }
-function setBet(v,el){
+function login(){
+  if($('mob').value.length<10||$('otp').value.length<4)return alert('Enter valid 10-digit mobile & OTP');
+  $('userTag').textContent='+91 '+$('mob').value+' • VIP 1';
+  $('loginView').classList.add('hide');$('arenaView').classList.remove('hide');sync();
+}
+function tab(id,el){
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('on'));el.classList.add('on');
+  ['sky','mine','hue','spin'].forEach(v=>$('v-'+v).classList.toggle('hide',v!==id));
+}
+function stake(v,el){
   if(skyOn||mineOn)return;
-  bet=v;document.querySelectorAll('.st').forEach(b=>b.classList.remove('on'));el.classList.add('on');upd();
+  bet=v;document.querySelectorAll('.glass .chips .chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');sync();
 }
-function showTab(t,el){
-  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));el.classList.add('on');
-  ['sky','mine','hue','spin'].forEach(x=>$('g-'+x).classList.toggle('hide',x!==t));
-}
-function toggleSky(){
+
+// 1. SKY WINS
+function playSky(){
   if(!skyOn){
-    if(bal<bet)return $('msg').textContent='Low balance!';
-    bal-=bet;wag+=bet;skyOn=true;skyM=1;skyCrash=+(1.15+Math.random()*3.8).toFixed(2);
-    $('skyBtn').className='btn red';$('sTxt').textContent='Flying... Tap Cash Out!';upd();
-    skyT=setInterval(()=>{
-      skyM=+(skyM+0.06).toFixed(2);$('mTxt').textContent=skyM.toFixed(2)+'×';
+    if(bal<bet)return alert('Low balance!');
+    bal-=bet;wag+=bet;skyOn=true;skyM=1;
+    skyEnd=Math.random()<0.25?+(1.12+Math.random()*0.4).toFixed(2):+(1.5+Math.random()*4.2).toFixed(2);
+    $('skyBtn').className='btn btn-red';$('multTxt').style.color='#34d399';$('skyMsg').textContent='Airborne! Tap Cash Out now!';sync();
+    skyInt=setInterval(()=>{
+      skyM=+(skyM+0.05+skyM*0.015).toFixed(2);
+      $('multTxt').textContent=skyM.toFixed(2)+'×';
       $('skyBtn').textContent='Cash Out ₹'+(bet*skyM).toFixed(2);
-      if(skyM>=skyCrash){
-        clearInterval(skyT);skyOn=false;$('skyBtn').className='btn';
-        $('mTxt').textContent='Crashed @ '+skyCrash+'×';$('msg').textContent='Sky wins: Flew away! Lost ₹'+bet;upd();
+      const x=Math.min(285,10+(skyM-1)*55),y=Math.max(18,140-(skyM-1)*28);
+      $('flightPath').setAttribute('d',`M 10 140 Q ${x*0.5} 140 ${x} ${y}`);
+      if(skyM>=skyEnd){
+        clearInterval(skyInt);skyOn=false;$('skyBtn').className='btn btn-green';
+        $('multTxt').style.color='#ef4444';$('multTxt').textContent='Flew Away @ '+skyEnd+'×';
+        $('skyMsg').textContent='Missed cashout! Try next flight.';
+        log('Sky Wins ('+skyEnd+'× crash)',bet,false);addSkyHist(skyEnd,false);sync();
       }
-    },130);
+    },110);
   }else{
-    clearInterval(skyT);skyOn=false;const w=+(bet*skyM).toFixed(2);bal+=w;
-    $('skyBtn').className='btn';$('msg').textContent='Sky wins: Cashed out at '+skyM+'× — Won ₹'+w+'!';upd();
+    clearInterval(skyInt);skyOn=false;const win=+(bet*skyM).toFixed(2);bal+=win;
+    $('skyBtn').className='btn btn-green';$('multTxt').style.color='#facc15';
+    $('skyMsg').textContent='Cashed out @ '+skyM+'× — Won ₹'+win+'!';
+    log('Sky Wins ('+skyM+'× cashout)',win,true);addSkyHist(skyM,true);sync();
   }
 }
-function drawBoard(show){
-  const b=$('board');b.innerHTML='';
+function addSkyHist(v,ok){
+  const s=document.createElement('span');s.className='pill';s.style.color=ok?'#34d399':'#f87171';s.textContent=v.toFixed(2)+'×';
+  $('skyHist').prepend(s);
+}
+
+// 2. CRYSTAL MINES
+function buildMines(reveal){
+  const g=$('mGrid');g.innerHTML='';
   for(let i=0;i<25;i++){
-    const c=document.createElement('button');c.className='cell';
-    c.textContent=show?(bombs.includes(i)?'💣':'💎'):'?';
-    c.onclick=()=>{
-      if(!mineOn||c.dataset.open)return;c.dataset.open=1;
-      if(bombs.includes(i)){mineOn=false;drawBoard(true);$('mineBtn').className='btn';$('msg').textContent='Crystal Drop: Hit Mine!';upd();}
-      else{c.textContent='💎';gems++;const w=+(bet*(1+gems*0.35)).toFixed(2);$('gCnt').textContent=gems;$('mWin').textContent='₹'+w;$('mineBtn').textContent='Cash Out ₹'+w;}
-    };b.appendChild(c);
+    const b=document.createElement('button');b.className='mcell';
+    if(reveal){b.classList.add(bombs.includes(i)?'no':'ok');b.textContent=bombs.includes(i)?'💣':'💎';}
+    else b.textContent='?';
+    b.onclick=()=>{
+      if(!mineOn||b.dataset.d)return;b.dataset.d=1;
+      if(bombs.includes(i)){mineOn=false;buildMines(true);$('mineBtn').className='btn btn-green';$('gWin').textContent='₹0.00';log('Crystal Drop (Mine)',bet,false);sync();}
+      else{b.classList.add('ok');b.textContent='💎';gems++;const w=+(bet*(1+gems*0.32)).toFixed(2);$('gNum').textContent=gems;$('gWin').textContent='₹'+w;$('mineBtn').textContent='Cash Out ₹'+w;}
+    };g.appendChild(b);
   }
 }
-drawBoard(false);
-function toggleMine(){
+buildMines(false);
+function playMine(){
   if(!mineOn){
-    if(bal<bet)return $('msg').textContent='Low balance!';
+    if(bal<bet)return alert('Low balance!');
     bal-=bet;wag+=bet;mineOn=true;gems=0;bombs=[];
-    while(bombs.length<3){let r=Math.floor(Math.random()*25);if(!bombs.includes(r))bombs.push(r);}
-    $('gCnt').textContent=0;$('mWin').textContent='₹'+bet;$('mineBtn').className='btn red';$('mineBtn').textContent='Pick Tile or Cash Out';
-    drawBoard(false);upd();
+    while(bombs.length<3){const r=Math.floor(Math.random()*25);if(!bombs.includes(r))bombs.push(r);}
+    $('gNum').textContent=0;$('gWin').textContent='₹'+bet.toFixed(2);$('mineBtn').className='btn btn-gold';$('mineBtn').textContent='Pick Tile or Cash Out';
+    buildMines(false);sync();
   }else if(gems>0){
-    const w=+(bet*(1+gems*0.35)).toFixed(2);bal+=w;mineOn=false;drawBoard(true);
-    $('mineBtn').className='btn';$('msg').textContent='Crystal Drop: Won ₹'+w+'!';upd();
+    const w=+(bet*(1+gems*0.32)).toFixed(2);bal+=w;mineOn=false;buildMines(true);
+    $('mineBtn').className='btn btn-green';log('Crystal Drop ('+gems+' gems)',w,true);sync();
   }
 }
-function pickH(c,el){huePick=c;document.querySelectorAll('.hb').forEach(b=>b.classList.remove('on'));el.classList.add('on');}
+
+// 3. HUE & NUMBER
+for(let n=0;n<10;n++){
+  const b=document.createElement('button');b.className='nbtn';b.textContent=n;
+  b.onclick=()=>{
+    if(pNum===n){pNum=null;b.classList.remove('on');}
+    else{document.querySelectorAll('.nbtn').forEach(x=>x.classList.remove('on'));pNum=n;b.classList.add('on');}
+  };$('nGrid').appendChild(b);
+}
+function setC(c,el){pCol=c;document.querySelectorAll('.cbtn').forEach(x=>x.classList.remove('on'));el.classList.add('on');}
 function playHue(){
-  if(bal<bet)return $('msg').textContent='Low balance!';
-  bal-=bet;wag+=bet;const cols=['Green','Green','Red','Red','Violet'];
-  const res=cols[Math.floor(Math.random()*cols.length)];
-  const mult=res==='Violet'?4:2;
-  if(res===huePick){const w=bet*mult;bal+=w;$('msg').textContent='Hue Match: '+res+' hit! Won ₹'+w;}
-  else $('msg').textContent='Hue Match: Result was '+res+'. No win.';upd();
+  if(bal<bet)return alert('Low balance!');
+  bal-=bet;wag+=bet;
+  const num=Math.floor(Math.random()*10);
+  const col=(num===0||num===5)?'Violet':(num%2===1?'Green':'Red');
+  let win=0;
+  if(pNum!==null&&pNum===num)win=bet*8;
+  else if(pCol===col)win=bet*(col==='Violet'?4:2);
+  if(win>0){bal+=win;$('hueOut').innerHTML=`Result: <b>${col} #${num}</b> — <span style="color:#34d399">Won ₹${win}!</span>`;log('Hue Match ('+col+' #'+num+')',win,true);}
+  else{$('hueOut').innerHTML=`Result: <b>${col} #${num}</b> — <span style="color:#f87171">No match</span>`;log('Hue Match ('+col+' #'+num+')',bet,false);}
+  sync();
 }
+
+// 4. SPIN BLITZ
 function playSpin(){
-  if(bal<bet)return $('msg').textContent='Low balance!';
-  bal-=bet;wag+=bet;const arr=[0,0.5,1.5,2,3,5,0,1.5];
-  const m=arr[Math.floor(Math.random()*arr.length)];const w=+(bet*m).toFixed(2);bal+=w;
-  $('spTxt').textContent='🎡 '+m+'×';$('msg').textContent=w>0?'Spin Blitz: Landed '+m+'× — Won ₹'+w+'!':'Spin Blitz: Landed 0×.';upd();
+  if(spinOn)return;if(bal<bet)return alert('Low balance!');
+  bal-=bet;wag+=bet;spinOn=true;sync();
+  const segs=[0,2,0.5,3,0,1.5,5,0.5];
+  const idx=Math.floor(Math.random()*segs.length),m=segs[idx];
+  rot+=1800+(360-(rot%360))+idx*45+22;
+  $('disc').style.transform=`rotate(${rot}deg)`;
+  setTimeout(()=>{
+    spinOn=false;const w=+(bet*m).toFixed(2);$('hubTxt').textContent=m+'×';
+    if(w>0){bal+=w;log('Spin Blitz ('+m+'×)',w,true);}else log('Spin Blitz (0×)',bet,false);
+    sync();
+  },2850);
 }
-function showUpi(){
-  $('msg').innerHTML='UPI ID: <b>sashu1537@ybl</b><br>Ref: <b>PulsePlay-Desk-01</b><br>QR: <a style="color:#60a5fa" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi%3A%2F%2Fpay%3Fpa%3Dsashu1537%40ybl%26pn%3DPulsePlay%2520Hub%26tn%3DPulsePlay-Desk-01">Open UPI QR Code</a>';
+
+// DEPOSIT MODAL
+function setQr(a,el){
+  depAmt=a;if(el){document.querySelectorAll('#payModal .chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');}
+  const u=`upi://pay?pa=sashu1537@ybl&pn=WinPulse%20Arena&am=${a}&cu=INR&tn=Terminal-1-Q16202080`;
+  $('qrImg').src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+encodeURIComponent(u);
+}
+function openPay(){setQr(depAmt);$('payModal').classList.add('open');}
+function closePay(){$('payModal').classList.remove('open');}
+function copyUpi(){if(navigator.clipboard)navigator.clipboard.writeText('sashu1537@ybl');alert('Copied: sashu1537@ybl');}
+function addDep(){
+  const u=$('utr').value.trim();if(u.length<6)return alert('Enter valid UTR');
+  bal+=depAmt;log('UPI Deposit (UTR '+u.slice(-4)+')',depAmt,true);$('utr').value='';closePay();sync();
 }
 </script>
 </body>
 </html>
-
-  
